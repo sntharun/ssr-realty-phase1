@@ -14,7 +14,7 @@ const mime = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=u
 const scopeWords = new Set(`a about above again all also am an and another any apartment apartments are area around at available availability balcony bed bedroom bedrooms below between bhk bot budget buy buying call can change chat clear commercial community compare connect construction contact could cr crore data demo details different do does draft email enquire enquiry filter filters find flat flats floor floors for form forms found founder from furnished gated get have hello help hi home homes house houses how i image images in inquiry is just lac lakh lakhs lease least less like listing listings local locality location look looking max maximum me min minimum month monthly more move my near need new no now of office offices on only option options or our page pages parking per photo photos place places please possession price project projects properties property purchase reach ready realty rent rental rentals resale reset retail room rooms road rs rupees sale same save saved search see semi send sent shop shops show showroom showrooms site size space spaces sq sqft square ssr start status submission submit sultan team tell than the there this to today under unfurnished up use using verified verification view viewing villa villas visit visits want website what whatsapp where which who with within work works would you your` .split(' '));
 const knownWords = new Set(listings.flatMap(item => `${item.title} ${item.locality} ${item.city} ${item.config} ${item.type} ${item.status}`.toLowerCase().match(/[a-z]+/g) || []));
 const propertyWords = /\b(property|properties|listing|listings|home|homes|house|houses|flat|flats|apartment|apartments|villa|villas|bhk|bedroom|bedrooms|office|offices|retail|shop|shops|showroom|showrooms|commercial|residential|buy|buying|purchase|sale|rent|rental|rentals|lease)\b/i;
-const offTopicReply = 'I can only help with this SSR Realty website and its illustrative property listings. Ask about a listing, location, budget, or where to find a page.';
+const offTopicReply = 'I can only help with this SSR Realty website and its property listings. Ask about a listing, location, budget, or where to find a page.';
 
 function send(res, status, body, type = 'application/json; charset=utf-8') {
   res.writeHead(status, { 'Content-Type': type, 'Cache-Control': 'no-store', 'X-Content-Type-Options': 'nosniff' });
@@ -50,16 +50,16 @@ function scopeMessage(message, previous = {}) {
   if (!words.length || words.some(word => !/^\d/.test(word) && !scopeWords.has(word) && !knownWords.has(word))) return { kind: 'reject' };
   const text = message.toLowerCase();
   if (/^\s*(hi|hello)\s*[!.?]*$/i.test(message) || /\b(what can you do|how does this work)\b/.test(text)) {
-    return { kind: 'site', reply: 'I can search the illustrative SSR listings by location, property type, size and budget. You can also ask where to find a page.' };
+    return { kind: 'site', reply: 'I can search properties by location, property type, size and budget. You can also ask where to find a page.' };
   }
   if (/\b(contact|enquire|enquiry|inquiry|reach|call|whatsapp|email|form|submit|submission)\b/.test(text)) {
-    return { kind: 'site', reply: 'Use the Enquire page to preview the contact form. This draft does not send or save enquiries.' };
+    return { kind: 'site', reply: 'Use the Enquire page to explore the contact form. It does not send or save enquiries.' };
   }
   if (/\b(sultan|founder)\b/.test(text)) {
-    return { kind: 'site', reply: 'The About SSR page has a placeholder for Sultan. His biography has not been approved for this draft.' };
+    return { kind: 'site', reply: 'The About SSR page describes the property search approach. Founder details are not available there yet.' };
   }
   if (/\b(page|pages|website|site|ssr|realty)\b/.test(text) && /\b(about|where|what|which|show|tell|find|do|does)\b/.test(text) && !propertyWords.test(text)) {
-    return { kind: 'site', reply: 'This draft has Home, Properties, About SSR and Enquire pages. The property information is illustrative.' };
+    return { kind: 'site', reply: 'This site has Home, Properties, About SSR and Enquire pages.' };
   }
   const hasKnownPlaceOrListing = listings.some(item => text.includes(item.locality.toLowerCase()) || text.includes(item.title.toLowerCase()));
   const hasRefinement = Object.values(cleanFilters(previous)).some(Boolean) && /\b(under|below|between|above|more|less|in|near|show|all|reset|change|different|same|only|also)\b/.test(text);
@@ -110,11 +110,10 @@ async function geminiParse(message, previous) {
 }
 
 function replyFor(matches, filters, mode) {
-  const noun = matches.length === 1 ? 'illustrative property' : 'illustrative properties';
-  const prefix = mode === 'preview' ? 'Gemini is not configured, so this is the local search preview. ' : '';
-  if (!matches.length) return `${prefix}I could not find a demo listing that meets those details. Try a different locality or budget, or ask me to show all.`;
+  const noun = matches.length === 1 ? 'property' : 'properties';
+  if (!matches.length) return 'I could not find a property that meets those details. Try a different locality or budget, or ask me to show all.';
   const area = filters.locality ? ` in ${filters.locality}` : '';
-  return `${prefix}I found ${matches.length} ${noun}${area}. The cards below use the demo inventory exactly as shown on this site. What would you like to refine?`;
+  return `I found ${matches.length} ${noun}${area}. The cards below show the matching properties on this site. What would you like to refine?`;
 }
 
 function allowChatRequest(ip, now = Date.now()) {
@@ -168,7 +167,7 @@ export function createServer() {
 }
 
 if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  createServer().listen(port, host, () => console.log(`SSR Phase 1 draft listening on ${host}:${port}`));
+  createServer().listen(port, host, () => console.log(`SSR Realty listening on ${host}:${port}`));
 }
 
 export { allowChatRequest, cleanFilters, search, previewParse, geminiParse, replyFor, scopeMessage, listings };
