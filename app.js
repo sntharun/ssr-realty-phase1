@@ -134,12 +134,19 @@ function setupChat() {
       chatFilters = data.filters || {};
       pending.textContent = data.reply;
       const found = (data.listingIds || []).map(id => listings.find(item => item.id === id)).filter(Boolean).slice(0, 3);
+      let latest = pending;
       if (found.length) {
         const group = document.createElement('div'); group.className = 'chat-result-list';
-        group.innerHTML = found.map(item => `<a href="${propertyUrl(item.id)}"><strong>${escapeHtml(item.title)}</strong><span>${escapeHtml(item.locality)} · ${escapeHtml(item.priceLabel)}</span><i>↗</i></a>`).join('');
+        group.innerHTML = found.map(item => `<a href="${propertyUrl(item.id)}"><div class="chat-result-image${item.image ? '' : ' is-missing'}">${item.image ? `<img src="${escapeHtml(item.image)}" alt="Illustrative image for ${escapeHtml(item.title)}" loading="lazy">` : ''}<span>Image unavailable</span></div><strong>${escapeHtml(item.title)}</strong><span>${escapeHtml(item.locality)} · ${escapeHtml(item.priceLabel)}</span><i aria-hidden="true">↗</i></a>`).join('');
+        group.querySelectorAll('.chat-result-image img').forEach(image => {
+          const showFallback = () => image.parentElement.classList.add('is-missing');
+          image.addEventListener('error', showFallback);
+          if (image.complete && !image.naturalWidth) showFallback();
+        });
         document.querySelector('#chat-messages').append(group);
+        latest = group;
       }
-      pending.scrollIntoView({ block: 'end', behavior: 'smooth' });
+      latest.scrollIntoView({ block: 'end' });
     } catch (error) { pending.textContent = error.message; }
     finally { input.disabled = false; form.querySelector('button').disabled = false; input.focus(); }
   }

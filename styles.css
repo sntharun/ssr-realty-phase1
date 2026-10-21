@@ -1687,25 +1687,60 @@ h3 {
     grid-template-columns: 1fr auto;
     background: white;
     border: 1px solid var(--line);
-    padding: 10px 12px;
-    line-height: 1.35
+    padding-bottom: 10px;
+    line-height: 1.35;
+    overflow: hidden
 }
 
-.chat-result-list strong {
+.chat-result-image {
+    grid-column: 1 / -1;
+    height: 130px;
+    margin-bottom: 10px;
+    background: #e4ebe3;
+    overflow: hidden
+}
+
+.chat-result-image img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover
+}
+
+.chat-result-image span {
+    display: none
+}
+
+.chat-result-image.is-missing img {
+    display: none
+}
+
+.chat-result-image.is-missing span {
+    display: grid;
+    place-items: center;
+    height: 100%;
+    color: #6b7b6d;
+    font-size: .66rem
+}
+
+.chat-result-list a>strong {
+    padding-left: 12px;
     font-size: .74rem
 }
 
-.chat-result-list span {
+.chat-result-list a>span {
     grid-column: 1;
+    padding-left: 12px;
     color: #6b7b6d;
     font-size: .66rem
 }
 
 .chat-result-list i {
     grid-column: 2;
-    grid-row: 1/3;
+    grid-row: 2/4;
     font-style: normal;
-    align-self: center
+    align-self: center;
+    padding-right: 12px
 }
 
 .chat-form {
