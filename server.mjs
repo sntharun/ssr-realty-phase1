@@ -56,7 +56,7 @@ function scopeMessage(message, previous = {}) {
     return { kind: 'site', reply: 'Use the Enquire page to explore the contact form. It does not send or save enquiries.' };
   }
   if (/\b(sultan|founder)\b/.test(text)) {
-    return { kind: 'site', reply: 'The About SSR page describes the property search approach. Founder details are not available there yet.' };
+    return { kind: 'site', reply: 'The About SSR page introduces Sultan, the founder of SSR Realty.' };
   }
   if (/\b(page|pages|website|site|ssr|realty)\b/.test(text) && /\b(about|where|what|which|show|tell|find|do|does)\b/.test(text) && !propertyWords.test(text)) {
     return { kind: 'site', reply: 'This site has Home, Properties, About SSR and Enquire pages.' };
