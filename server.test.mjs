@@ -40,7 +40,7 @@ test('switching from residential to commercial clears incompatible preview filte
 
 test('empty results cannot claim a match', () => {
   const reply = replyFor([], cleanFilters({ intent: 'buy' }), 'gemini');
-  assert.match(reply, /could not find a property/);
+  assert.match(reply, /could not find a demo listing/);
 });
 
 test('Gemini interpretation is validated before it reaches inventory search', async () => {
